@@ -72,12 +72,11 @@ def count_nan_in_row(df: pd.DataFrame, threshold: float = 1.5, inplace: bool = F
         return df_working['outliers_count']
 
 
-def pca_outliers_count(df: pd.DataFrame, threshold: float = 1.5, inplace=False) -> pd.DataFrame:
+def pca_outliers_count(df: pd.DataFrame, threshold: float = 1.5) -> pd.DataFrame:
     """
     Count number of outliers in each row of a dataframe using PCA
     :param df: raw dataframe which will be modified to include=np.number columns and PCA columns
     :param threshold: threshold for outlier detection
-    :param inplace: option to modify the original dataframe or return a new one (after PCA)
     :return: dataframe with number of outliers in each row
     """
     df_working = df.copy()
@@ -87,10 +86,6 @@ def pca_outliers_count(df: pd.DataFrame, threshold: float = 1.5, inplace=False) 
     df_working_pca = pca.fit_transform(df_working_numeric)
     df_working_pca = pd.DataFrame(df_working_pca, columns=['PCA1', 'PCA2'])
 
-    df_working_pca = outliers_labeling(df_working_pca, threshold)
-    df_working_pca['outliers_count'] = df_working_pca.isnull().sum(axis=1)
+    print(f'PCA explained variance ratio: {pca.explained_variance_ratio_}')
 
-    if inplace:
-        return df_working_pca
-
-    return df_working_pca[['outliers_count']]
+    return count_nan_in_row(df_working_pca, threshold, inplace=False)

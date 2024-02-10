@@ -56,13 +56,13 @@ def plot_pca(df, variance=0.95, svd_solver='auto', inplace=None):
     print(f'Variance - {variance}, Dimension - {dimension}')
 
     explained_variance = []
-    dimension = []
+    dimension_list = []
 
     for v in np.arange(0.01, 1.0, 0.05):
         d = np.argmax(cumsum >= v) + 1
 
         explained_variance.append(v)
-        dimension.append(d)
+        dimension_list.append(d)
 
     if inplace:
         pca = PCA(n_components=inplace)
@@ -70,7 +70,8 @@ def plot_pca(df, variance=0.95, svd_solver='auto', inplace=None):
         df_pca = pd.DataFrame(df_pca, columns=['PCA1', 'PCA2'])
         return df_pca
 
-    plt.plot(dimension, explained_variance)
+    plt.plot(dimension_list, explained_variance)
+    plt.axvline(x=dimension, color='red', linestyle='--', label=f'Best {dimension}')
     plt.xlabel("Number of Dimension")
     plt.ylabel("Variance Explained")
     plt.grid(alpha=0.2)
